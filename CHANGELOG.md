@@ -1,3 +1,11 @@
+## [1.0.4](https://github.com/aequasi/async-prometheus-client/compare/v1.0.3...v1.0.4) (2019-02-14)
+
+
+### Bug Fixes
+
+* **tests:** Adding registry tests ([70232d6](https://github.com/aequasi/async-prometheus-client/commit/70232d6))
+* **tests:** Adding tests for gauge and histogram ([f0d8585](https://github.com/aequasi/async-prometheus-client/commit/f0d8585))
+
 ## [1.0.3](https://github.com/aequasi/async-prometheus-client/compare/v1.0.2...v1.0.3) (2019-02-14)
 
 
