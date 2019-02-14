@@ -2,9 +2,13 @@
     "name": "prometheus-client",
     "version": "0.1.0",
     "description": "Prometheus client, with support for horizontal scaling w/o a PushGateway",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
-    "scripts": {},
+    "main": "index.js",
+    "types": "index.d.ts",
+    "scripts": {
+        "build": "tsc --project tsconfig.json",
+        "list": "tslint",
+        "prepublishOnly": "rm -r src && mv dist/* . && rmdir dist"
+    },
     "author": "Aaron Scherer <aequasi@gmail.com>",
     "license": "MIT",
     "devDependencies": {
@@ -14,5 +18,22 @@
         "reflect-metadata": "^0.1.13",
         "tslint": "^5.12.1",
         "typescript": "^3.3.3"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "release": {
+        "plugins": [
+            "@semantic-release/commit-analyzer",
+            "@semantic-release/release-notes-generator",
+            [
+                "@semantic-release/changelog",
+                {
+                    "changelogFile": "CHANGELOG.md"
+                }
+            ],
+            "@semantic-release/git",
+            "@semantic-release/npm"
+        ]
     }
 }
