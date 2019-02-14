@@ -1,3 +1,12 @@
+## [1.0.3](https://github.com/aequasi/async-prometheus-client/compare/v1.0.2...v1.0.3) (2019-02-14)
+
+
+### Bug Fixes
+
+* **all:** Adding index ([29df25e](https://github.com/aequasi/async-prometheus-client/commit/29df25e))
+* **index:** Adding ([47957b0](https://github.com/aequasi/async-prometheus-client/commit/47957b0))
+* **Merge:** github.com:aequasi/async-prometheus-client ([b37d207](https://github.com/aequasi/async-prometheus-client/commit/b37d207))
+
 ## [1.0.2](https://github.com/aequasi/async-prometheus-client/compare/v1.0.1...v1.0.2) (2019-02-14)
 
 
