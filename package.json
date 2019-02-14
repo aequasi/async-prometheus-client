@@ -1,6 +1,5 @@
 {
-    "name": "prometheus-client",
-    "version": "0.1.0",
+    "name": "async-prometheus-client",
     "description": "Prometheus client, with support for horizontal scaling w/o a PushGateway",
     "main": "index.js",
     "types": "index.d.ts",
