@@ -1,3 +1,4 @@
+import {Types} from '../Constants';
 import MetricFamilySamples from '../MetricFamilySamples';
 import {SampleInterface} from '../Sample';
 import DataInterface from './DataInterface';
@@ -5,7 +6,7 @@ import DataInterface from './DataInterface';
 export interface Metadata {
     name: string;
     help: string;
-    type: string;
+    type: Types;
     labelNames: string[];
     buckets?: Array<string | number>;
     samples?: SampleInterface[];

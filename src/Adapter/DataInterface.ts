@@ -1,7 +1,9 @@
+import {Types} from '../Constants';
+
 export default interface DataInterface {
     name: string;
     help: string;
-    type: string;
+    type: Types;
     command?: number;
     labelNames: string[];
     labelValues: string[];
