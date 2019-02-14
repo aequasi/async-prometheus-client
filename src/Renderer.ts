@@ -1,4 +1,4 @@
-import CollectorRegistry from './CollectorRegistry';
+import Registry from './Registry';
 import MetricFamilySamples from './MetricFamilySamples';
 import Sample from './Sample';
 import array_combine from './Util/array_combine';
@@ -6,7 +6,7 @@ import array_combine from './Util/array_combine';
 export default class Renderer {
     public static MIME_TYPE = 'text/plain; version=0.1.0';
 
-    public static async render(registry: CollectorRegistry): Promise<string> {
+    public static async render(registry: Registry): Promise<string> {
         const metrics = await registry.getMetricFamilySamples();
 
         metrics.sort((a, b) => a.name.localeCompare(b.name));

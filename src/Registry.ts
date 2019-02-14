@@ -1,20 +1,20 @@
 import AbstractAdapter from './Adapter/AbstractAdapter';
 import InMemoryAdapter from './Adapter/InMemoryAdapter';
-import {Counter, Gauge, Histogram, HistogramInterface, MetricInterface} from './Metric';
+import {Counter, Gauge, Histogram, MetricInterface} from './Metric';
 import MetricFamilySamples from './MetricFamilySamples';
 
-export default class CollectorRegistry {
-
-    public static getDefault(): CollectorRegistry {
-        if (!CollectorRegistry.defaultRegistry) {
-            CollectorRegistry.defaultRegistry = new CollectorRegistry(new InMemoryAdapter());
+export default class Registry {
+    public static getDefault(): Registry {
+        if (!Registry.defaultRegistry) {
+            Registry.defaultRegistry = new Registry(new InMemoryAdapter());
         }
 
-        return CollectorRegistry.defaultRegistry;
+        return Registry.defaultRegistry;
     }
-    private static defaultRegistry: CollectorRegistry;
 
-    private readonly storageAdapter: AbstractAdapter;
+    private static defaultRegistry: Registry;
+
+    public readonly storageAdapter: AbstractAdapter;
 
     private readonly gauges: Gauge[] = [];
 
@@ -30,7 +30,7 @@ export default class CollectorRegistry {
         return this.storageAdapter.collect();
     }
 
-    public registerCounter(config: MetricInterface): Counter {
+    public registerCounter(config: Partial<MetricInterface>): Counter {
         const metricIdentifier = this.metricIdentifier(config.namespace, config.name);
         if (this.counters[metricIdentifier] !== undefined) {
             throw new Error('Metric already registered');
@@ -49,7 +49,7 @@ export default class CollectorRegistry {
         return this.counters[metricIdentifier];
     }
 
-    public getOrRegisterCounter(config: MetricInterface): Counter {
+    public getOrRegisterCounter(config: Partial<MetricInterface>): Counter {
         try {
             return this.getCounter(config.namespace, config.name);
         } catch (e) {
@@ -57,7 +57,7 @@ export default class CollectorRegistry {
         }
     }
 
-    public registerGauge(config: MetricInterface): Gauge {
+    public registerGauge(config: Partial<MetricInterface>): Gauge {
         const metricIdentifier = this.metricIdentifier(config.namespace, config.name);
         if (this.gauges[metricIdentifier] !== undefined) {
             throw new Error('Metric already registered');
@@ -76,7 +76,7 @@ export default class CollectorRegistry {
         return this.gauges[metricIdentifier];
     }
 
-    public getOrRegisterGauge(config: MetricInterface): Gauge {
+    public getOrRegisterGauge(config: Partial<MetricInterface>): Gauge {
         try {
             return this.getGauge(config.namespace, config.name);
         } catch (e) {
@@ -84,7 +84,7 @@ export default class CollectorRegistry {
         }
     }
 
-    public registerHistogram(config: HistogramInterface): Histogram {
+    public registerHistogram(config: Partial<MetricInterface>): Histogram {
         const metricIdentifier = this.metricIdentifier(config.namespace, config.name);
         if (this.histograms[metricIdentifier] !== undefined) {
             throw new Error('Metric already registered');
@@ -103,7 +103,7 @@ export default class CollectorRegistry {
         return this.histograms[metricIdentifier];
     }
 
-    public getOrRegisterHistogram(config: HistogramInterface): Histogram {
+    public getOrRegisterHistogram(config: Partial<MetricInterface>): Histogram {
         try {
             return this.getHistogram(config.namespace, config.name);
         } catch (e) {

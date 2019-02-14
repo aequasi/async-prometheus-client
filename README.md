@@ -21,13 +21,13 @@ This solution was heavily inspired (pretty much a clone) from the [PHP library](
 ##### Create your registry:
 
 ```typescript
-import {CollectorRegistry, RedisAdapter} from 'async-prometheus-client'
+import {Registry, RedisAdapter} from 'async-prometheus-client'
 import {createClient} from 'redis';
 
 // By default, this will use an In Memory registry
-const registry = CollectorRegistry.getDefault();
+const registry = Registry.getDefault();
 // Or, a Redis one!
-const registry = new CollectorRegistry(new RedisAdapter(createClient()));
+const registry = new Registry(new RedisAdapter(createClient()));
 ```
 
 ##### Create some metrics

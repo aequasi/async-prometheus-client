@@ -13,7 +13,7 @@ export default class Histogram extends AbstractMetric implements HistogramInterf
     public constructor(storageAdapter: AbstractAdapter, config: Partial<HistogramInterface>) {
         super(storageAdapter, config);
 
-        if (config.buckets === null) {
+        if (config.buckets === undefined) {
             this.buckets = Histogram.getDefaultBuckets();
         } else {
             this.buckets = config.buckets;
@@ -31,7 +31,8 @@ export default class Histogram extends AbstractMetric implements HistogramInterf
             }
         }
 
-        for (const label of config.labels) {
+
+        for (const label of this.labels) {
             if (label === 'le') {
                 throw new Error('Histogram cannot have a label named "le".');
             }
