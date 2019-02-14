@@ -12,7 +12,6 @@ branches:
 
 install:
     - npm i
-    - npm-install-peers
 
 script:
     - npm run build
@@ -20,10 +19,3 @@ script:
 after_success:
     - npm i -g semantic-release@15 @semantic-release/npm @semantic-release/changelog @semantic-release/git @semantic-release/changelog @semantic-release/commit-analyzer @semantic-release/release-notes-generator
     - npx semantic-release
-    - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
-    - chmod +x send.sh
-    - ./send.sh success $WEBHOOK_URL
-after_failure:
-    - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
-    - chmod +x send.sh
-    - ./send.sh failure $WEBHOOK_URL
