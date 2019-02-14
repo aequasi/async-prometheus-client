@@ -1,5 +1,5 @@
 // from http://locutus.io/php/array/array_combine/
-export default function array_combine(keys: Array<string | number>, values: any[]): {[key: string]: any} | boolean { // eslint-disable-line camelcase
+export default function array_combine(keys: Array<string | number>, values: any[]): {[key: string]: any} | boolean {
     //  discuss at: http://locutus.io/php/array_combine/
     // original by: Kevin van Zonneveld (http://kvz.io)
     // improved by: Brett Zamir (http://brett-zamir.me)

@@ -4,7 +4,6 @@ import {Counter, Gauge, Histogram, HistogramInterface, MetricInterface} from './
 import MetricFamilySamples from './MetricFamilySamples';
 
 export default class CollectorRegistry {
-    private static defaultRegistry: CollectorRegistry;
 
     public static getDefault(): CollectorRegistry {
         if (!CollectorRegistry.defaultRegistry) {
@@ -13,6 +12,7 @@ export default class CollectorRegistry {
 
         return CollectorRegistry.defaultRegistry;
     }
+    private static defaultRegistry: CollectorRegistry;
 
     private readonly storageAdapter: AbstractAdapter;
 

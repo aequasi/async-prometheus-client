@@ -10,7 +10,7 @@ export default class Counter extends AbstractMetric {
         return this.incBy(1, labels);
     }
 
-    private async incBy(value: number, labels: string[] = []): Promise<void> {
+    public async incBy(value: number, labels: string[] = []): Promise<void> {
         this.assertLabelsAreDefinedCorrectly(labels);
 
         return this.storageAdapter.updateCounter({

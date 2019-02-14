@@ -9,10 +9,6 @@ export default class Histogram extends AbstractMetric implements HistogramInterf
 
     public readonly buckets: Array<string|number>;
 
-    public getType(): string {
-        return 'histogram';
-    }
-
     public constructor(storageAdapter: AbstractAdapter, config: Partial<HistogramInterface>) {
         super(storageAdapter, config);
 
@@ -29,7 +25,7 @@ export default class Histogram extends AbstractMetric implements HistogramInterf
         for (let i = 0; i < this.buckets.length; i++) {
             if (this.buckets[i] >= this.buckets[i + 1]) {
                 throw new Error(
-                    `Histogram buckets must be in increasing order: ${this.buckets[i]} >= ${this.buckets[i + 1]}`
+                    `Histogram buckets must be in increasing order: ${this.buckets[i]} >= ${this.buckets[i + 1]}`,
                 );
             }
         }
@@ -39,6 +35,10 @@ export default class Histogram extends AbstractMetric implements HistogramInterf
                 throw new Error('Histogram cannot have a label named "le".');
             }
         }
+    }
+
+    public getType(): string {
+        return 'histogram';
     }
 
     public async observe(value: number, labels: string[] = []): Promise<void> {

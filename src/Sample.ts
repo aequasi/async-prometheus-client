@@ -8,14 +8,20 @@ export interface SampleInterface {
 export default class Sample {
     public readonly name: string;
 
-    public readonly labelNames: string[];
+    public readonly labelNames: string[] = [];
 
-    public readonly labelValues: string[];
+    public readonly labelValues: string[] = [];
 
     public readonly value: number;
 
-    public constructor(init: Partial<SampleInterface>) {
+    public constructor(init: SampleInterface) {
         Object.assign(this, init);
+        if (this.name === undefined) {
+            throw new Error('Name must be defined');
+        }
+        if (this.value === undefined) {
+            throw new Error('Value must be defined');
+        }
     }
 
     public hasLabelNames(): boolean {

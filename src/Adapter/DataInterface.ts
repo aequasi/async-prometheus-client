@@ -1,10 +1,10 @@
 export default interface DataInterface {
-    name: string,
-    help: string,
-    type: string,
+    name: string;
+    help: string;
+    type: string;
     command?: number;
-    labelNames: string[]
-    labelValues: string[]
+    labelNames: string[];
+    labelValues: string[];
     buckets?: Array<string | number>;
     value: number;
 }

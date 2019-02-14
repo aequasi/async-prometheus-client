@@ -3,20 +3,20 @@ import {SampleInterface} from '../Sample';
 import DataInterface from './DataInterface';
 
 export interface Metadata {
-    name: string,
-    help: string,
-    type: string,
-    labelNames: string[]
+    name: string;
+    help: string;
+    type: string;
+    labelNames: string[];
     buckets?: Array<string | number>;
-    samples?: SampleInterface[]
+    samples?: SampleInterface[];
 }
 
 export default abstract class AbstractAdapter {
-    static COMMAND_INCREMENT_INTEGER = 1;
+    public static COMMAND_INCREMENT_INTEGER = 1;
 
-    static COMMAND_INCREMENT_FLOAT   = 2;
+    public static COMMAND_INCREMENT_FLOAT   = 2;
 
-    static COMMAND_SET               = 3;
+    public static COMMAND_SET               = 3;
 
     public abstract flush(): Promise<void>;
 

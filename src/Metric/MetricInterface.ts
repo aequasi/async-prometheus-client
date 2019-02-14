@@ -1,5 +1,5 @@
 export default interface MetricInterface {
-    metricName: string
+    metricName: string;
     namespace: string;
     name: string;
     help: string;

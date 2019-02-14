@@ -5,16 +5,27 @@
     "types": "index.d.ts",
     "scripts": {
         "build": "tsc --project tsconfig.json",
-        "list": "tslint",
+        "lint": "tslint -p . -t stylish --fix",
+        "test": "mocha -r ts-node/register src/*.spec.ts src/**/*.spec.ts",
         "prepublishOnly": "rm -r src && mv dist/* . && rmdir dist"
     },
     "author": "Aaron Scherer <aequasi@gmail.com>",
     "license": "MIT",
     "devDependencies": {
+        "@types/chai": "^4.1.7",
+        "@types/mocha": "^5.2.6",
         "@types/node": "^11.9.3",
         "@types/redis": "^2.8.10",
+        "@types/sinon": "^7.0.6",
+        "@types/sinon-chai": "^3.2.2",
+        "chai": "^4.2.0",
+        "mocha": "^5.2.0",
         "redis": "^2.8.0",
         "reflect-metadata": "^0.1.13",
+        "sinon": "^7.2.3",
+        "sinon-chai": "^3.3.0",
+        "ts-node": "^8.0.2",
+        "ts-sinon": "^1.0.13",
         "tslint": "^5.12.1",
         "typescript": "^3.3.3"
     },

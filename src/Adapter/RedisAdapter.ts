@@ -1,8 +1,8 @@
+import redis from 'redis';
 import MetricFamilySamples, {MetricFamilySamplesInterface} from '../MetricFamilySamples';
 import {SampleInterface} from '../Sample';
 import AbstractAdapter from './AbstractAdapter';
 import DataInterface from './DataInterface';
-import redis from 'redis';
 
 export const PROMETHEUS_METRIC_KEYS_SUFFIX = '_METRIC_KEYS';
 
@@ -118,13 +118,13 @@ export default class RedisAdapter extends AbstractAdapter {
                         return resolve();
                     }
 
-                    this.client.hset(key, '__meta', JSON.stringify(metadata), (err2) => {
-                        if (err2) {
-                            return reject(err2);
+                    this.client.hset(key, '__meta', JSON.stringify(metadata), (err3) => {
+                        if (err3) {
+                            return reject(err3);
                         }
 
-                        this.client.sadd('histogram' + PROMETHEUS_METRIC_KEYS_SUFFIX, (err3) => {
-                            err3 ? reject(err3) : resolve();
+                        this.client.sadd('histogram' + PROMETHEUS_METRIC_KEYS_SUFFIX, (err4) => {
+                            err4 ? reject(err4) : resolve();
                         });
                     });
                 });
@@ -144,8 +144,8 @@ export default class RedisAdapter extends AbstractAdapter {
             histogram.buckets.push('+Inf');
 
             let allLabelValues: string[][] = [];
-            for (const key of Object.keys(raw)) {
-                const d = JSON.parse(key);
+            for (const k of Object.keys(raw)) {
+                const d = JSON.parse(k);
                 if (d.b !== 'sum') {
                     allLabelValues.push(d.labelValues);
                 }
@@ -203,12 +203,12 @@ export default class RedisAdapter extends AbstractAdapter {
             const gauge: MetricFamilySamplesInterface = JSON.parse(raw.__meta);
             delete raw.__meta;
             gauge.samples = [];
-            for (const [key, value] of Object.entries(raw)) {
+            for (const [k, v] of Object.entries(raw)) {
                 gauge.samples.push({
                     name:        gauge.name,
                     labelNames:  [],
-                    labelValues: JSON.parse(key),
-                    value:       parseInt(value, 10),
+                    labelValues: JSON.parse(k),
+                    value:       parseInt(v, 10),
                 });
             }
 
@@ -218,7 +218,7 @@ export default class RedisAdapter extends AbstractAdapter {
 
         return gauges;
     }
-    
+
     private async collectCounters(): Promise<MetricFamilySamples[]> {
         const keys = await this.getKeys('counter' + PROMETHEUS_METRIC_KEYS_SUFFIX);
         keys.sort();
@@ -228,12 +228,12 @@ export default class RedisAdapter extends AbstractAdapter {
             const counter: MetricFamilySamplesInterface = JSON.parse(raw.__meta);
             delete raw.__meta;
             counter.samples = [];
-            for (const [key, value] of Object.entries(raw)) {
+            for (const [k, v] of Object.entries(raw)) {
                 counter.samples.push({
                     name:        counter.name,
                     labelNames:  [],
-                    labelValues: JSON.parse(key),
-                    value:       parseInt(value, 10),
+                    labelValues: JSON.parse(k),
+                    value:       parseInt(v, 10),
                 });
             }
 

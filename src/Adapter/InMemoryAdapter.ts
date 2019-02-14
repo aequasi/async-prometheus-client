@@ -82,7 +82,7 @@ export default class InMemoryAdapter extends AbstractAdapter {
         this.histograms[metaKey]['samples'][sumKey] += data.value;
 
         let bucketToIncrease: string = '+Inf';
-        for (let b of data.buckets) {
+        for (const b of data.buckets) {
             const bucket = parseInt(b as string, 10);
             if (!isNaN(bucket) && data.value < bucket) {
                 bucketToIncrease = b as string;
