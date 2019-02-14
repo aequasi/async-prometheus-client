@@ -1,5 +1,6 @@
 import {createHash} from 'crypto';
 import AbstractAdapter from '../Adapter/AbstractAdapter';
+import {Types} from '../Constants';
 import MetricInterface from './MetricInterface';
 
 const sha = createHash('sha1');
@@ -33,7 +34,7 @@ export default abstract class AbstractMetric implements MetricInterface {
         }
     }
 
-    public abstract getType(): string;
+    public abstract getType(): Types;
 
     public getKey(): string {
         return sha.update((this.metricName + JSON.stringify(this.labels))).digest('hex');

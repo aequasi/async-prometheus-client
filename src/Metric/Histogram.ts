@@ -1,4 +1,5 @@
 import AbstractAdapter from '../Adapter/AbstractAdapter';
+import {Types} from '../Constants';
 import AbstractMetric from './AbstractMetric';
 import HistogramInterface from './HistogramInterface';
 
@@ -37,7 +38,7 @@ export default class Histogram extends AbstractMetric implements HistogramInterf
         }
     }
 
-    public getType(): string {
+    public getType(): Types {
         return 'histogram';
     }
 

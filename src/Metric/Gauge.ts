@@ -1,8 +1,9 @@
 import AbstractAdapter from '../Adapter/AbstractAdapter';
+import {Types} from '../Constants';
 import AbstractMetric from './AbstractMetric';
 
 export default class Gauge extends AbstractMetric {
-    public getType(): string {
+    public getType(): Types {
         return 'gauge';
     }
 
