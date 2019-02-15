@@ -25,5 +25,6 @@ script:
     - npm run build
 
 after_success:
+    - npm run coverage
     - npm i -g semantic-release@15 @semantic-release/npm @semantic-release/changelog @semantic-release/git @semantic-release/changelog @semantic-release/commit-analyzer @semantic-release/release-notes-generator
     - npx semantic-release

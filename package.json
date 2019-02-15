@@ -6,7 +6,8 @@
     "scripts": {
         "build": "tsc --project tsconfig.json",
         "lint": "tslint -p . -t stylish --fix",
-        "test": "mocha -r ts-node/register src/*.spec.ts src/**/*.spec.ts",
+        "test": "nyc --reporter=html --reporter=text mocha -r ts-node/register src/*.spec.ts src/**/*.spec.ts",
+        "coverage": "nyc report --reporter=text-lcov | npx coveralls",
         "prepublishOnly": "rm -r src && mv dist/* . && rmdir dist"
     },
     "author": "Aaron Scherer <aequasi@gmail.com>",
@@ -20,6 +21,7 @@
         "@types/sinon-chai": "^3.2.2",
         "chai": "^4.2.0",
         "mocha": "^5.2.0",
+        "nyc": "^13.3.0",
         "redis": "^2.8.0",
         "reflect-metadata": "^0.1.13",
         "sinon": "^7.2.3",
