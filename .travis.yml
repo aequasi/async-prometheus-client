@@ -9,7 +9,7 @@ node_js:
 services: redis-server
 
 env:
-    - REDIS_DSN=redis://redis:6479
+    - REDIS_DSN=redis://localhost:6479
 
 sudo: false
 if: tag IS blank
