@@ -1,7 +1,15 @@
 language: node_js
 
 node_js:
+    - "12"
+    - "11"
     - "10"
+    - "9"
+
+services: redis-server
+
+env:
+    - REDIS_DSN=redis://redis:6479
 
 sudo: false
 if: tag IS blank
