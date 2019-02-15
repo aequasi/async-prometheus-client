@@ -1,7 +1,7 @@
 language: node_js
 node_js:
-    - "10"
     - "11"
+    - "10"
     - "9"
 
 sudo: false
@@ -17,6 +17,10 @@ stages:
 jobs:
     include:
         -   stage: test
+            node_js: 10
+            script: npm run test
+        -   stage: test
+            node_js: 9
             script: npm run test
         -   stage: test
             node_js: 10
