@@ -17,12 +17,6 @@ stages:
 jobs:
     include:
         -   stage: test
-            node_js: 11
-            script: npm run test
-        -   stage: test
-            node_js: 9
-            script: npm run test
-        -   stage: test
             node_js: 10
             script: npm run coverage
         -   stage: release
