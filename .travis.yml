@@ -12,17 +12,18 @@ install:
     - npm i
 
 stages:
-    - name: test
-      if: branch = master AND tag IS blank
-    - name: release
-      if: branch = master AND tag IS blank
+    -   name: test
+        if: branch = master AND tag IS blank
+    -   name: release
+        if: branch = master AND tag IS blank
 jobs:
     include:
         -   stage: test
+            node_js: [11,9]
             script: npm run test
         -   stage: test
             node_js: 10
-            script: npm run coverage
+            script: npm run test && npm run coverage
 
         -   stage: release
             node_js: 10
