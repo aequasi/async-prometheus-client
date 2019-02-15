@@ -6,9 +6,26 @@
     "scripts": {
         "build": "tsc --project tsconfig.json",
         "lint": "tslint -p . -t stylish --fix",
-        "test": "nyc --reporter=html --reporter=text mocha -r ts-node/register src/*.spec.ts src/**/*.spec.ts",
+        "test": "nyc --reporter=html --reporter=text mocha",
         "coverage": "nyc report --reporter=text-lcov | npx coveralls",
         "prepublishOnly": "rm -r src && mv dist/* . && rmdir dist"
+    },
+    "nyc": {
+        "extension": [
+            ".ts",
+            ".tsx"
+        ],
+        "include": [
+            "src/**/*.ts",
+            "src/**/*.tsx"
+        ],
+        "reporter": [
+            "text",
+            "text-lcov",
+            "html"
+        ],
+        "sourceMap":  true,
+        "instrument": true
     },
     "author": "Aaron Scherer <aequasi@gmail.com>",
     "license": "MIT",
@@ -26,6 +43,7 @@
         "reflect-metadata": "^0.1.13",
         "sinon": "^7.2.3",
         "sinon-chai": "^3.3.0",
+        "source-map-support": "^0.5.10",
         "ts-node": "^8.0.2",
         "ts-sinon": "^1.0.13",
         "tslint": "^5.12.1",
