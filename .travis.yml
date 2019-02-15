@@ -27,16 +27,10 @@ stages:
 jobs:
     include:
         -   stage: test
-            node_js: 11
             script: npm run test
         -   stage: test
             node_js: 10
-            script: |
-                npm run test
-                npm run coverage
-        -   stage: test
-            node_js: 9
-            script: npm run test
+            script: npm run coverage
 
         -   stage: release
             node_js: 10
