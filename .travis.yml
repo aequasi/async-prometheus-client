@@ -1,8 +1,10 @@
 language: node_js
-node_js:
-    - "10"
-    - "11"
-    - "9"
+matrix:
+    include:
+        -   node_js: 11
+        -   node_js: 10
+            env: COVERAGE=true
+        -   node_js: 19
 
 sudo: false
 services: redis-server
@@ -14,11 +16,11 @@ stages:
       if: branch = master AND tag IS blank
     - name: release
       if: branch = master AND tag IS blank
+
+script: npm run test && if [[ "$COVERAGE" = "true" ]]; then npm run coverage; fi
+
 jobs:
     include:
-        -   stage: test
-            node_js: 10
-            script: npm run coverage
         -   stage: release
             node_js: 10
             script: |
