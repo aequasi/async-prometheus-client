@@ -1,22 +1,24 @@
 import {expect, use} from 'chai';
 import 'mocha';
+import {createClient} from 'redis';
 import * as sinonChai from 'sinon-chai';
-// import {stubInterface} from 'ts-sinon';
 
-import InMemoryAdapter from '../Adapter/InMemoryAdapter';
 import {Counter, Gauge, Histogram} from '../Metric';
+import RedisAdapter from './RedisAdapter';
 
 use(sinonChai);
 
-describe('src/Adapter/InMemoryAdapter.ts', () => {
-    it('should allow you to collect metrics', async () => {
-        const adapter = new InMemoryAdapter();
+describe('src/Adapter/RedisAdapter.ts', () => {
+    const client = createClient(process.env.REDIS_DSN);
+    const adapter = new RedisAdapter(client);
+    beforeEach(() => client.flushall());
+    after(() => client.quit());
 
+    it('should allow you to collect metrics', async () => {
         expect(await adapter.collect()).to.have.length(0);
     });
 
     it('should allow you to update a counter', async () => {
-        const adapter = new InMemoryAdapter();
         expect(await adapter.collect()).to.have.length(0);
 
         const counter = new Counter(adapter, {name: 'test_counter', help: 'Test Counter', labels: ['foo']});
@@ -46,7 +48,6 @@ describe('src/Adapter/InMemoryAdapter.ts', () => {
     });
 
     it('should allow you to update a gauge', async () => {
-        const adapter = new InMemoryAdapter();
         expect(await adapter.collect()).to.have.length(0);
 
         const gauge = new Gauge(adapter, {name: 'test_gauge', help: 'Test Gauge', labels: ['foo']});
@@ -76,7 +77,6 @@ describe('src/Adapter/InMemoryAdapter.ts', () => {
     });
 
     it('should allow you to update a histogram', async () => {
-        const adapter = new InMemoryAdapter();
         expect(await adapter.collect()).to.have.length(0);
 
         const histogram = new Histogram(
@@ -139,7 +139,6 @@ describe('src/Adapter/InMemoryAdapter.ts', () => {
     });
 
     it('should allow you to flush', async () => {
-        const adapter = new InMemoryAdapter();
         expect(await adapter.collect()).to.have.length(0);
 
         const counter = new Counter(adapter, {name: 'test_counter', help: 'Test Counter', labels: ['foo']});

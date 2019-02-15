@@ -112,7 +112,7 @@ export default class InMemoryAdapter extends AbstractAdapter {
                 help:       metadata.help,
                 type:       metadata.type,
                 labelNames: metadata.labelNames,
-                buckets:    metadata.buckets,
+                buckets:    [...metadata.buckets],
                 samples:    [],
             };
 

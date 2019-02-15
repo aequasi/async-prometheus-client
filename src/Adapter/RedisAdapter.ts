@@ -1,4 +1,4 @@
-import redis from 'redis';
+import {ClientOpts, createClient, RedisClient} from 'redis';
 import MetricFamilySamples, {MetricFamilySamplesInterface} from '../MetricFamilySamples';
 import {SampleInterface} from '../Sample';
 import AbstractAdapter from './AbstractAdapter';
@@ -7,15 +7,15 @@ import DataInterface from './DataInterface';
 export const PROMETHEUS_METRIC_KEYS_SUFFIX = '_METRIC_KEYS';
 
 export default class RedisAdapter extends AbstractAdapter {
-    private readonly client: redis.RedisClient;
+    private readonly client: RedisClient;
 
-    constructor(options: redis.ClientOpts | redis.RedisClient) {
+    constructor(options: ClientOpts | RedisClient) {
         super();
 
-        if (options instanceof redis.RedisClient) {
+        if (options instanceof RedisClient) {
             this.client = options;
         } else {
-            this.client = redis.createClient(options);
+            this.client = createClient(options);
         }
     }
 
@@ -32,104 +32,67 @@ export default class RedisAdapter extends AbstractAdapter {
     }
 
     public async updateCounter(data: DataInterface): Promise<void> {
-        return new Promise((resolve, reject) => {
-            const key      = this.metaKey(data);
-            const metadata = this.metaData(data);
-            this.client.hincrby(key, JSON.stringify(data.labelValues), data.value, (err, reply) => {
-                if (err) {
-                    return reject(err);
-                }
+        const key      = this.metaKey(data);
+        const metadata = this.metaData(data);
 
-                if (reply !== data.value) {
-                    return resolve();
-                }
+        try {
+            if (await this.hIncBy(key, JSON.stringify(data.labelValues), data.value) !== data.value) {
+                return;
+            }
 
-                this.client.hmset(key, '__meta', JSON.stringify(metadata), (err2) => {
-                    if (err2) {
-                        return reject(err2);
-                    }
-
-                    this.client.sadd('counter' + PROMETHEUS_METRIC_KEYS_SUFFIX, (err3) => {
-                        err3 ? reject(err3) : resolve();
-                    });
-                });
-            });
-        });
+            await this.hSet(key, '__meta', JSON.stringify(metadata));
+            await this.sAdd('counter' + PROMETHEUS_METRIC_KEYS_SUFFIX, key);
+        } catch (e) {
+            throw new Error('Failed to update redis: ' + e.message);
+        }
     }
 
     public async updateGauge(data: DataInterface): Promise<void> {
-        return new Promise((resolve, reject) => {
-            const key      = this.metaKey(data);
-            const metadata = this.metaData(data);
-            const method   = data.command === AbstractAdapter.COMMAND_SET ? 'hset' : 'hincrbyfloat';
-            this.client[method](key, JSON.stringify(data.labelValues), data.value as string & number, (err, reply) => {
-                if (err) {
-                    return reject(err);
-                }
+        const key      = this.metaKey(data);
+        const metadata = this.metaData(data);
+        const method   = data.command === AbstractAdapter.COMMAND_SET ? 'hSet' : 'hIncByFloat';
 
-                if (data.command === AbstractAdapter.COMMAND_SET) {
-                    if (reply !== 1) {
-                        return resolve();
-                    }
-                } else {
-                    if (reply !== data.value) {
-                        return resolve();
-                    }
-                }
+        try {
+            const reply = await this[method](key, JSON.stringify(data.labelValues), data.value as string & number);
+            if (data.command === AbstractAdapter.COMMAND_SET && reply !== 1) {
+                return;
+            } else if (data.command !== RedisAdapter.COMMAND_SET && reply !== data.value) {
+                return;
+            }
 
-                this.client.hset(key, '__meta', JSON.stringify(metadata), (err2) => {
-                    if (err2) {
-                        return reject(err2);
-                    }
-
-                    this.client.sadd('gauge' + PROMETHEUS_METRIC_KEYS_SUFFIX, (err3) => {
-                        err3 ? reject(err3) : resolve();
-                    });
-                });
-            });
-        });
+            await this.hSet(key, '__meta', JSON.stringify(metadata));
+            await this.sAdd('gauge' + PROMETHEUS_METRIC_KEYS_SUFFIX, key);
+        } catch (e) {
+            throw new Error('Failed to update redis: ' + e.message);
+        }
     }
 
     public async updateHistogram(data: DataInterface): Promise<void> {
-        return new Promise((resolve, reject) => {
-            let bucketToIncrease = '+Inf';
-            for (const b of data.buckets) {
-                const bucket = parseInt(b as string, 10);
-                if (!isNaN(bucket) && data.value < bucket) {
-                    bucketToIncrease = b as string;
-                    break;
-                }
+        let bucketToIncrease: string | number = '+Inf';
+        for (const b of data.buckets) {
+            if (data.value <= b) {
+                bucketToIncrease = b;
+                break;
+            }
+        }
+
+        const key      = this.metaKey(data);
+        const metadata = this.metaData(data);
+        const field1   = JSON.stringify({b: 'sum', labelValues: data.labelValues});
+        const field2   = JSON.stringify({b: bucketToIncrease, labelValues: data.labelValues});
+
+        try {
+            const reply = await this.hIncByFloat(key, field1, data.value);
+            await this.hIncBy(key, field2, 1);
+            if (reply !== data.value) {
+                return;
             }
 
-            const key      = this.metaKey(data);
-            const metadata = this.metaData(data);
-            const field1   = JSON.stringify({b: 'sum', labelValues: data.labelValues});
-            const field2   = JSON.stringify({b: bucketToIncrease, labelValues: data.labelValues});
-            this.client.hincrbyfloat(key, field1, data.value, (err, reply) => {
-                if (err) {
-                    return reject(err);
-                }
-                this.client.hincrby(key, field2, 1, (err2) => {
-                    if (err2) {
-                        return reject(err2);
-                    }
-
-                    if (parseFloat(reply) !== data.value) {
-                        return resolve();
-                    }
-
-                    this.client.hset(key, '__meta', JSON.stringify(metadata), (err3) => {
-                        if (err3) {
-                            return reject(err3);
-                        }
-
-                        this.client.sadd('histogram' + PROMETHEUS_METRIC_KEYS_SUFFIX, (err4) => {
-                            err4 ? reject(err4) : resolve();
-                        });
-                    });
-                });
-            });
-        });
+            await this.hSet(key, '__meta', JSON.stringify(metadata));
+            await this.sAdd('histogram' + PROMETHEUS_METRIC_KEYS_SUFFIX, key);
+        } catch (e) {
+            throw new Error('Failed to update redis: ' + e.message);
+        }
     }
 
     private async collectHistograms(): Promise<MetricFamilySamples[]> {
@@ -137,11 +100,15 @@ export default class RedisAdapter extends AbstractAdapter {
         keys.sort();
         const histograms: MetricFamilySamples[] = [];
         for (const key of keys) {
-            const raw                                     = await this.hGetAll(key);
-            const histogram: MetricFamilySamplesInterface = JSON.parse(raw.__meta);
+            const raw                                = await this.hGetAll(key);
+            const data: MetricFamilySamplesInterface = {
+                ...JSON.parse(raw.__meta),
+                samples: [],
+            };
             delete raw.__meta;
-            histogram.samples = [];
-            histogram.buckets.push('+Inf');
+            if (data.buckets.indexOf('+Inf') === -1) {
+                data.buckets.push('+Inf');
+            }
 
             let allLabelValues: string[][] = [];
             for (const k of Object.keys(raw)) {
@@ -161,34 +128,35 @@ export default class RedisAdapter extends AbstractAdapter {
                 // If the bucket doesn't exist fill in values from
                 // the previous one.
                 let acc = 0;
-                for (const bucket of histogram.buckets) {
+                for (const bucket of data.buckets) {
                     const bucketKey = JSON.stringify({b: bucket, labelValues});
                     if (raw[bucketKey] !== undefined) {
                         acc += parseInt(raw[bucketKey], 10);
                     }
-                    histogram.samples.push({
-                        name:        histogram.name + '_bucket',
+
+                    data.samples.push({
+                        name:        data.name + '_bucket',
                         labelNames:  ['le'],
                         labelValues: labelValues.concat([bucket as string]),
                         value:       acc,
                     });
                 }
 
-                histogram.samples.push({
-                    name:       histogram.name + '_count',
+                data.samples.push({
+                    name:       data.name + '_count',
                     labelNames: [],
                     value:      acc,
                     labelValues,
                 });
 
-                histogram.samples.push({
-                    name:       histogram.name + '_sum',
+                data.samples.push({
+                    name:       data.name + '_sum',
                     labelNames: [],
-                    value:      parseInt(raw[JSON.stringify({b: 'sum', labelValues})], 10),
+                    value:      parseFloat(raw[JSON.stringify({b: 'sum', labelValues})]),
                     labelValues,
                 });
             }
-            histograms.push(new MetricFamilySamples(histogram));
+            histograms.push(new MetricFamilySamples(data));
         }
 
         return histograms;
@@ -224,7 +192,7 @@ export default class RedisAdapter extends AbstractAdapter {
         keys.sort();
         const counters: MetricFamilySamples[] = [];
         for (const key of keys) {
-            const raw                                 = await this.hGetAll(key);
+            const raw                                   = await this.hGetAll(key);
             const counter: MetricFamilySamplesInterface = JSON.parse(raw.__meta);
             delete raw.__meta;
             counter.samples = [];
@@ -260,4 +228,35 @@ export default class RedisAdapter extends AbstractAdapter {
         });
     }
 
+    private async hIncByFloat(key: string, field: string, value: number): Promise<number> {
+        return new Promise((resolve, reject) => {
+            this.client.hincrbyfloat(key, field, value, (err, reply) => err ? reject(err) : resolve(parseFloat(reply)));
+        });
+    }
+
+    private async hIncBy(key: string, field: string, value: number): Promise<number> {
+        return new Promise((resolve, reject) => {
+            this.client.hincrby(key, field, value, (err, reply) => err ? reject(err) : resolve(reply));
+        });
+    }
+
+    /*
+    private async hmset(key: string, field: string, value: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.client.hmset(key, field, value, (err) => err ? reject(err) : resolve());
+        });
+    }
+    */
+
+    private async hSet(key: string, field: string, value: string): Promise<number> {
+        return new Promise((resolve, reject) => {
+            this.client.hset(key, field, value, (err, reply) => err ? reject(err) : resolve(reply));
+        });
+    }
+
+    private async sAdd(key: string, member: string): Promise<number> {
+        return new Promise((resolve, reject) => {
+            this.client.sadd(key, member, (err, reply) => err ? reject(err) : resolve(reply));
+        });
+    }
 }
