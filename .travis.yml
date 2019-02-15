@@ -1,33 +1,25 @@
 language: node_js
-
 node_js:
     - "11"
     - "10"
     - "9"
 
-services: redis-server
-
-env:
-    - REDIS_DSN=redis://localhost:6379
-
 sudo: false
-if: tag IS blank
-
-branches:
-    only:
-        - master
-
+services: redis-server
 install:
     - npm i
 
 stages:
-    - test
-    - release
-
+    - name: test
+      if: branch = master AND tag IS black
+    - name: release
+      if: branch = master AND tag IS black
 jobs:
     include:
         -   stage: test
             script: npm run test
+            env:
+                - REDIS_DSN=redis://localhost:6379
         -   stage: test
             node_js: 10
             script: npm run coverage
