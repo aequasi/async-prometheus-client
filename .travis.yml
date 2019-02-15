@@ -20,11 +20,23 @@ branches:
 install:
     - npm i
 
-script:
-    - npm run test
-    - npm run build
+stages:
+    - test
+    - build
+    - release
 
-after_success:
-    - npm run coverage
-    - npm i -g semantic-release@15 @semantic-release/npm @semantic-release/changelog @semantic-release/git @semantic-release/changelog @semantic-release/commit-analyzer @semantic-release/release-notes-generator
-    - npx semantic-release
+jobs:
+    include:
+        -   stage: test
+            script: npm run test
+        -   stage: coverage
+            node_js: 10
+            script: npm run coverage
+        -   stage: build
+            node_js: 10
+            script: npm run build
+        -   stage: release
+            node_js: 10
+            script: |
+                npm i -g semantic-release@15 @semantic-release/npm @semantic-release/changelog @semantic-release/git @semantic-release/changelog @semantic-release/commit-analyzer @semantic-release/release-notes-generator
+                npx semantic-release
