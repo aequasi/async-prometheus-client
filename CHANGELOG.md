@@ -1,3 +1,16 @@
+## [1.0.6](https://github.com/aequasi/async-prometheus-client/compare/v1.0.5...v1.0.6) (2019-02-15)
+
+
+### Bug Fixes
+
+* **Merge:** github.com:aequasi/async-prometheus-client ([e617f00](https://github.com/aequasi/async-prometheus-client/commit/e617f00))
+* **readme:** Adding travis badge ([9a28efc](https://github.com/aequasi/async-prometheus-client/commit/9a28efc))
+* **tests and RedisAdapter:** Fixing Redis Adapter and writing tests for it ([2944346](https://github.com/aequasi/async-prometheus-client/commit/2944346))
+* **travis:** Adding redis-server ([5a43ed4](https://github.com/aequasi/async-prometheus-client/commit/5a43ed4))
+* **travis:** Adding redis-server ([079a2bd](https://github.com/aequasi/async-prometheus-client/commit/079a2bd))
+* **travis:** Fixing redis port ([84f28c2](https://github.com/aequasi/async-prometheus-client/commit/84f28c2))
+* **travis:** Removing nodejs 12 ([7f8ab47](https://github.com/aequasi/async-prometheus-client/commit/7f8ab47))
+
 ## [1.0.5](https://github.com/aequasi/async-prometheus-client/compare/v1.0.4...v1.0.5) (2019-02-15)
 
 
