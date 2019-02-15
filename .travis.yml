@@ -11,9 +11,9 @@ install:
 
 stages:
     - name: test
-      if: branch = master AND tag IS black
+      if: branch = master AND tag IS blank
     - name: release
-      if: branch = master AND tag IS black
+      if: branch = master AND tag IS blank
 jobs:
     include:
         -   stage: test
