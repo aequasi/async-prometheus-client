@@ -1,3 +1,10 @@
+## [1.0.10](https://github.com/aequasi/async-prometheus-client/compare/v1.0.9...v1.0.10) (2019-02-15)
+
+
+### Bug Fixes
+
+* **readme:** Updating build steps ([4349aea](https://github.com/aequasi/async-prometheus-client/commit/4349aea))
+
 ## [1.0.9](https://github.com/aequasi/async-prometheus-client/compare/v1.0.8...v1.0.9) (2019-02-15)
 
 
