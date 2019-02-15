@@ -3,10 +3,6 @@ node_js:
     - 11
     - 10
     - 9
-matrix:
-    include:
-        -   node_js: 10
-            env: COVERAGE=true
 
 sudo: false
 services: redis-server
@@ -19,7 +15,7 @@ stages:
     - name: release
       if: branch = master AND tag IS blank
 
-script: npm run test && if [[ "$COVERAGE" = "true" ]]; then npm run coverage; fi
+script: npm run test && if [[ "$(node -v)" = v10.* ]]; then npm run coverage; fi
 
 jobs:
     include:
