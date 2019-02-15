@@ -1,5 +1,5 @@
 # Async Node.JS Prometheus Client
-[![Build Status](https://travis-ci.org/aequasi/async-prometheus-client.svg?branch=master)](https://travis-ci.org/aequasi/async-prometheus-client) [![Coverage Status](https://coveralls.io/repos/github/aequasi/async-prometheus-client/badge.svg?branch=master)](https://coveralls.io/github/aequasi/async-prometheus-client?branch=master)
+[![Build Status](https://travis-ci.org/aequasi/async-prometheus-client.svg?branch=master)](https://travis-ci.org/aequasi/async-prometheus-client) [![codecov](https://codecov.io/gh/aequasi/async-prometheus-client/branch/master/graph/badge.svg)](https://codecov.io/gh/aequasi/async-prometheus-client)
 
 This library was built to allow for asynchronous metric tracking. This mostly just means that it was built in order to 
 use Redis as a registry.
