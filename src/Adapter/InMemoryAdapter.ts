@@ -9,11 +9,11 @@ interface MetricWithMetadataInterface {
 }
 
 export default class InMemoryAdapter extends AbstractAdapter {
-    private readonly counters: MetricWithMetadataInterface[];
+    private counters: { [key: string]: MetricWithMetadataInterface } = {};
 
-    private readonly gauges: MetricWithMetadataInterface[];
+    private gauges: { [key: string]: MetricWithMetadataInterface } = {};
 
-    private readonly histograms: MetricWithMetadataInterface[];
+    private histograms: { [key: string]: MetricWithMetadataInterface } = {};
 
     public async collect(): Promise<MetricFamilySamples[]> {
         return [
@@ -24,9 +24,9 @@ export default class InMemoryAdapter extends AbstractAdapter {
     }
 
     public async flush(): Promise<void> {
-        this.counters.length   = 0;
-        this.gauges.length     = 0;
-        this.histograms.length = 0;
+        this.counters   = {};
+        this.gauges     = {};
+        this.histograms = {};
     }
 
     public async updateCounter(data: DataInterface): Promise<void> {
@@ -81,11 +81,10 @@ export default class InMemoryAdapter extends AbstractAdapter {
         }
         this.histograms[metaKey]['samples'][sumKey] += data.value;
 
-        let bucketToIncrease: string = '+Inf';
+        let bucketToIncrease: string | number = '+Inf';
         for (const b of data.buckets) {
-            const bucket = parseInt(b as string, 10);
-            if (!isNaN(bucket) && data.value < bucket) {
-                bucketToIncrease = b as string;
+            if (data.value <= b) {
+                bucketToIncrease = b;
                 break;
             }
         }
@@ -93,20 +92,20 @@ export default class InMemoryAdapter extends AbstractAdapter {
         if (this.histograms[metaKey]['samples'][bucketKey] === undefined) {
             this.histograms[metaKey]['samples'][bucketKey] = 0;
         }
-        this.histograms[metaKey]['samples'][bucketKey] += data.value;
+        this.histograms[metaKey]['samples'][bucketKey] += 1;
     }
 
     private valueKey(data: DataInterface): string {
         return `${data.type}:${data.name}:${this.encodeLabelValues(data.labelValues)}:value`;
     }
 
-    private histogramBucketValueKey(data: DataInterface, bucket: string): string {
+    private histogramBucketValueKey(data: DataInterface, bucket: string | number): string {
         return `${data.type}:${data.name}:${this.encodeLabelValues(data.labelValues)}:${bucket}`;
     }
 
     private async collectHistograms(): Promise<MetricFamilySamples[]> {
         const histograms: MetricFamilySamples[] = [];
-        for (const histogram of this.histograms) {
+        for (const histogram of Object.values(this.histograms)) {
             const metadata                           = histogram.meta;
             const data: MetricFamilySamplesInterface = {
                 name:       metadata.name,
@@ -118,7 +117,9 @@ export default class InMemoryAdapter extends AbstractAdapter {
             };
 
             // Add the Inf bucket so we can compute it later on
-            data.buckets.push('+Inf');
+            if (data.buckets.indexOf('+Inf') === -1) {
+                data.buckets.push('+Inf');
+            }
 
             const histogramBuckets = {};
             for (const [key, value] of Object.entries(histogram.samples)) {
@@ -166,9 +167,11 @@ export default class InMemoryAdapter extends AbstractAdapter {
         return histograms;
     }
 
-    private async internalCollect(metrics: MetricWithMetadataInterface[]): Promise<MetricFamilySamples[]> {
+    private async internalCollect(
+        metrics: { [key: string]: MetricWithMetadataInterface },
+    ): Promise<MetricFamilySamples[]> {
         const result = [];
-        for (const metric of metrics) {
+        for (const metric of Object.values(metrics)) {
             const metadata                           = metric.meta;
             const data: MetricFamilySamplesInterface = {
                 name:       metadata.name,
@@ -199,10 +202,10 @@ export default class InMemoryAdapter extends AbstractAdapter {
     }
 
     private decodeLabelValues(labelValues: string): string[] {
-        return JSON.parse(atob(labelValues));
+        return JSON.parse(Buffer.from(labelValues, 'base64').toString());
     }
 
     private encodeLabelValues(values: string[]): string {
-        return btoa(JSON.stringify(values));
+        return Buffer.from(JSON.stringify(values)).toString('base64');
     }
 }
