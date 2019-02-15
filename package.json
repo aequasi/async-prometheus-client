@@ -24,7 +24,7 @@
             "text-lcov",
             "html"
         ],
-        "sourceMap":  true,
+        "sourceMap": true,
         "instrument": true
     },
     "author": "Aaron Scherer <aequasi@gmail.com>",

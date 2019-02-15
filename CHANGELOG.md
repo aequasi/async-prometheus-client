@@ -1,3 +1,10 @@
+## [1.0.8](https://github.com/aequasi/async-prometheus-client/compare/v1.0.7...v1.0.8) (2019-02-15)
+
+
+### Bug Fixes
+
+* **tests:** Adding coverage and coveralls ([c26c124](https://github.com/aequasi/async-prometheus-client/commit/c26c124))
+
 ## [1.0.7](https://github.com/aequasi/async-prometheus-client/compare/v1.0.6...v1.0.7) (2019-02-15)
 
 
