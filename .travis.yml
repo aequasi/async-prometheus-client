@@ -3,6 +3,8 @@ node_js:
     - "11"
     - "10"
     - "9"
+env:
+    - REDIS_DSN=redis://localhost:6379
 
 sudo: false
 services: redis-server
@@ -18,8 +20,6 @@ jobs:
     include:
         -   stage: test
             script: npm run test
-            env:
-                - REDIS_DSN=redis://localhost:6379
         -   stage: test
             node_js: 10
             script: npm run coverage
