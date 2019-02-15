@@ -13,6 +13,7 @@ export default abstract class AbstractMetric implements MetricInterface {
     public readonly labels: string[] = [];
 
     public readonly metricName: string;
+
     public constructor(protected storageAdapter: AbstractAdapter, config: Partial<MetricInterface>) {
         if (config.name === undefined) {
             throw new Error('Name must be defined');
