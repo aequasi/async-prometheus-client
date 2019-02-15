@@ -21,14 +21,15 @@ install:
     - npm i
 
 stages:
-    - test_and_build
+    - test & build
     - release
 
 jobs:
     include:
-        -   stage: test_and_build
+        -   stage: test & build
+            node_js: [11, 10, 9]
             script: npm run test
-        -   stage: test_and_build
+        -   stage: test & build
             node_js: 10
             script: npm run build
         -   stage: release
