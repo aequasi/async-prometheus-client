@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/aequasi/async-prometheus-client/compare/v1.0.4...v1.0.5) (2019-02-15)
+
+
+### Bug Fixes
+
+* **tests and InMemoryAdapter:** Fixed the in memory adapter, and added the rest of the tests ([f6b2bb8](https://github.com/aequasi/async-prometheus-client/commit/f6b2bb8))
+
 ## [1.0.4](https://github.com/aequasi/async-prometheus-client/compare/v1.0.3...v1.0.4) (2019-02-14)
 
 
