@@ -7,7 +7,7 @@
         "build": "tsc --project tsconfig.json",
         "lint": "tslint -p . -t stylish --fix",
         "test": "nyc mocha",
-        "coverage": "nyc report --reporter=text-lcov | coveralls",
+        "coverage": "nyc report --reporter=text-lcov > coverage.lcov && npx codecov",
         "prepublishOnly": "rm -r src && mv dist/* . && rmdir dist"
     },
     "nyc": {
@@ -35,7 +35,6 @@
         "@types/sinon": "^7.0.6",
         "@types/sinon-chai": "^3.2.2",
         "chai": "^4.2.0",
-        "coveralls": "^3.0.2",
         "mocha": "^5.2.0",
         "nyc": "^13.3.0",
         "redis": "^2.8.0",
