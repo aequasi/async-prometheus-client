@@ -9,7 +9,7 @@ import RedisAdapter from './RedisAdapter';
 use(sinonChai);
 
 describe('src/Adapter/RedisAdapter.ts', () => {
-    const client = createClient(process.env.REDIS_DSN);
+    const client = createClient(process.env.REDIS_DSN || 'redis://localhost:6379');
     const adapter = new RedisAdapter(client);
     beforeEach(() => client.flushall());
     after(() => client.quit());
