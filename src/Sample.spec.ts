@@ -21,4 +21,12 @@ describe('src/Sample.ts', () => {
         const badInit = {name: 'test'};
         expect(() => new Sample(badInit as any)).to.throw('Value must be defined');
     });
+
+    it('should respond whether or not it has label names', () => {
+        const trueSample = new Sample({name: 'test', value: 1, labelNames: ['foo'], labelValues: ['bar']});
+        const falseSample = new Sample({name: 'test', value: 1, labelNames: [], labelValues: []});
+
+        expect(trueSample.hasLabelNames()).to.eq(true);
+        expect(falseSample.hasLabelNames()).to.eq(false);
+    });
 });

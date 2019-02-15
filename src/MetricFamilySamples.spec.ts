@@ -22,4 +22,22 @@ describe('src/MetricFamilySample.ts', () => {
     it('Should throw an exception if there is no help', () => {
         expect(() => new MetricFamilySamples({name: 'foo', type: 'bar'} as any)).to.throw('Help must be defined');
     });
+
+    it('should respond whether or not it has label names', () => {
+        const trueMetricFamilySample  = new MetricFamilySamples({
+            name:       'test',
+            type:       'counter',
+            help:       'help',
+            labelNames: ['foo'],
+        });
+        const falseMetricFamilySample = new MetricFamilySamples({
+            name:       'test',
+            type:       'counter',
+            help:       'help',
+            labelNames: [],
+        });
+
+        expect(trueMetricFamilySample.hasLabelNames()).to.eq(true);
+        expect(falseMetricFamilySample.hasLabelNames()).to.eq(false);
+    });
 });
