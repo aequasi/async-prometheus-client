@@ -31,19 +31,16 @@ jobs:
             script: npm run test
         -   stage: test
             node_js: 10
-            script: npm run test
-        -   stage: release
-            node_js: 10
-            script: npm run coverage
+            script: |
+                npm run test
+                npm run coverage
         -   stage: test
             node_js: 9
             script: npm run test
 
         -   stage: release
             node_js: 10
-            script: npm run build
-        -   stage: release
-            node_js: 10
             script: |
+                npm run build
                 npm i -g semantic-release@15 @semantic-release/npm @semantic-release/changelog @semantic-release/git @semantic-release/changelog @semantic-release/commit-analyzer @semantic-release/release-notes-generator
                 npx semantic-release
