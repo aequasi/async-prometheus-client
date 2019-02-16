@@ -1,12 +1,16 @@
 import {expect, use} from 'chai';
-import 'mocha';
+import {createHash} from 'crypto';
 import * as sinonChai from 'sinon-chai';
 import {stubInterface} from 'ts-sinon';
+
+import 'mocha';
 
 import InMemoryAdapter from '../Adapter/InMemoryAdapter';
 import Counter from './Counter';
 
 use(sinonChai);
+
+const sha = createHash('sha1');
 
 describe('src/Metric/Abstract.ts', () => {
     it('should require a name and a help', () => {
@@ -37,5 +41,22 @@ describe('src/Metric/Abstract.ts', () => {
         const config = {name: 'foo', help: 'a', labels: ['foo', 'ba$r']};
 
         expect(() => new Counter(adapter, config)).to.throw(`Invalid metric label for metric "${config.name}": ba$r`);
+    });
+
+    it('should create a key properly', () => {
+        const adapter = stubInterface<InMemoryAdapter>();
+        const config  = {name: 'foo', help: 'a', labels: ['foo', 'bar']};
+        const counter = new Counter(adapter, config);
+
+        const hash = sha.update((this.metricName + JSON.stringify(config.labels))).digest('hex');
+
+        expect(counter.getKey()).to.eq(hash);
+    });
+
+    it('should throw an error if labels dont match', () => {
+        const adapter = stubInterface<InMemoryAdapter>();
+        const config = {name: 'foo', help: 'a', labels: ['foo']};
+        const counter = new Counter(adapter, config);
+        expect(() => counter.inc(['a', 'b'])).to.throw('Labels are not defined correctly: ');
     });
 });
