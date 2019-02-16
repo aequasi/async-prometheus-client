@@ -1,3 +1,12 @@
+## [1.0.15](https://github.com/aequasi/async-prometheus-client/compare/v1.0.14...v1.0.15) (2019-02-16)
+
+
+### Bug Fixes
+
+* **tests:** Adding more tests for metrics ([5a12d70](https://github.com/aequasi/async-prometheus-client/commit/5a12d70))
+* **tests:** Adding more tests for metrics ([708a759](https://github.com/aequasi/async-prometheus-client/commit/708a759))
+* **tests:** Adding more tests for metrics ([599a6af](https://github.com/aequasi/async-prometheus-client/commit/599a6af))
+
 ## [1.0.14](https://github.com/aequasi/async-prometheus-client/compare/v1.0.13...v1.0.14) (2019-02-15)
 
 
