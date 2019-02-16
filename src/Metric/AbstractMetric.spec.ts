@@ -48,7 +48,7 @@ describe('src/Metric/Abstract.ts', () => {
         const config  = {name: 'foo', help: 'a', labels: ['foo', 'bar']};
         const counter = new Counter(adapter, config);
 
-        const hash = sha.update((this.metricName + JSON.stringify(config.labels))).digest('hex');
+        const hash = sha.update((counter.metricName + JSON.stringify(config.labels))).digest('hex');
 
         expect(counter.getKey()).to.eq(hash);
     });
