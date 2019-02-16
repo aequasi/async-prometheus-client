@@ -53,10 +53,21 @@ describe('src/Metric/Abstract.ts', () => {
         expect(counter.getKey()).to.eq(hash);
     });
 
-    it('should throw an error if labels dont match', () => {
+    it('should throw an error if labels dont match', async () => {
         const adapter = stubInterface<InMemoryAdapter>();
         const config = {name: 'foo', help: 'a', labels: ['foo']};
         const counter = new Counter(adapter, config);
-        expect(() => counter.inc(['a', 'b'])).to.throw('Labels are not defined correctly: ');
+
+        let errored = false;
+        let error = '';
+        try {
+            await counter.inc(['a', 'b', 'c']);
+        } catch (e) {
+            errored = true;
+            error = e.message;
+        }
+
+        expect(errored).to.eq(true);
+        expect(error).to.be.contain('Labels are not defined correctly: ');
     });
 });
