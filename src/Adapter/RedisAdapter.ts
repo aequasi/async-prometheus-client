@@ -246,14 +246,6 @@ export default class RedisAdapter extends AbstractAdapter {
         });
     }
 
-    /*
-    private async hmset(key: string, field: string, value: string): Promise<void> {
-        return new Promise((resolve, reject) => {
-            this.client.hmset(key, field, value, (err) => err ? reject(err) : resolve());
-        });
-    }
-    */
-
     private async hSet(key: string, field: string, value: string): Promise<number> {
         return new Promise((resolve, reject) => {
             this.client.hset(key, field, value, (err, reply) => err ? reject(err) : resolve(reply));
