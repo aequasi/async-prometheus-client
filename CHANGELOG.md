@@ -1,3 +1,10 @@
+## [1.0.21](https://github.com/aequasi/async-prometheus-client/compare/v1.0.20...v1.0.21) (2019-02-17)
+
+
+### Bug Fixes
+
+* **tests:** Fixing name ([dccfce9](https://github.com/aequasi/async-prometheus-client/commit/dccfce9))
+
 ## [1.0.20](https://github.com/aequasi/async-prometheus-client/compare/v1.0.19...v1.0.20) (2019-02-17)
 
 
