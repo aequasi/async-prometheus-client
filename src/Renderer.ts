@@ -38,7 +38,7 @@ export default class Renderer {
     }
 
     private static escapeLabelValue(value: string): string {
-        return value
+        return ('' + value)
             .replace(/\\/g, '\\\\')
             .replace(/\n/g, '\\n')
             .replace(/"/g, '\\"');
