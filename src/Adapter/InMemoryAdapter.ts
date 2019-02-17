@@ -41,11 +41,8 @@ export default class InMemoryAdapter extends AbstractAdapter {
         if (this.counters[metaKey]['samples'][valueKey] === undefined) {
             this.counters[metaKey]['samples'][valueKey] = 0;
         }
-        if (data.command === AbstractAdapter.COMMAND_SET) {
-            this.counters[metaKey]['samples'][valueKey] = 0;
-        } else {
-            this.counters[metaKey]['samples'][valueKey] += data.value;
-        }
+
+        this.counters[metaKey]['samples'][valueKey] += data.value;
     }
 
     public async updateGauge(data: DataInterface): Promise<void> {
