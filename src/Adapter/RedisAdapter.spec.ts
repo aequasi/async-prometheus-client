@@ -69,11 +69,12 @@ describe('src/Adapter/RedisAdapter.ts', () => {
         expect(collection[0].samples[0].value).to.eq(5);
 
         await gauge.set(0, ['bar']);
+        await gauge.inc(['bar']);
         await gauge.inc(['baz']);
         collection = await adapter.collect();
 
         expect(collection[0].samples).to.have.length(2);
-        expect(collection[0].samples[0].value).to.eq(0);
+        expect(collection[0].samples[0].value).to.eq(1);
         expect(collection[0].samples[1].labelValues[0]).to.eq('baz');
         expect(collection[0].samples[1].value).to.eq(1);
     });
