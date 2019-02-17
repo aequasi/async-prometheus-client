@@ -60,7 +60,9 @@ export default class RedisAdapter extends AbstractAdapter {
             const reply = await this[method](key, JSON.stringify(data.labelValues), data.value as string & number);
             if (data.command === AbstractAdapter.COMMAND_SET && reply !== 1) {
                 return;
-            } else if (data.command !== RedisAdapter.COMMAND_SET && reply !== data.value) {
+            }
+
+            if (data.command !== RedisAdapter.COMMAND_SET && reply !== data.value) {
                 return;
             }
 
