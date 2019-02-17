@@ -8,8 +8,10 @@ import RedisAdapter from './RedisAdapter';
 
 use(sinonChai);
 
+const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+
 describe('src/Adapter/RedisAdapter.ts', () => {
-    const client = createClient(process.env.REDIS_DSN || 'redis://localhost:6379');
+    const client  = createClient(process.env.REDIS_DSN || 'redis://localhost:6379');
     const adapter = new RedisAdapter(client);
     beforeEach(() => client.flushall());
     after(() => client.quit());
@@ -86,7 +88,7 @@ describe('src/Adapter/RedisAdapter.ts', () => {
         await histogram.observe(0.5, ['bar']);
         await histogram.observe(5, ['bar']);
 
-        let collection = await adapter.collect();
+        let collection         = await adapter.collect();
         let actualBucketLength = histogram.buckets.length + 3;
 
         expect(collection).to.have.length(1);
@@ -115,7 +117,7 @@ describe('src/Adapter/RedisAdapter.ts', () => {
         await histogram.observe(7, ['bar']);
         await histogram.observe(8, ['bar']);
         await histogram.observe(1, ['baz']);
-        collection = await adapter.collect();
+        collection         = await adapter.collect();
         actualBucketLength = (histogram.buckets.length + 3) * 2;
 
         expect(collection[0].samples).to.have.length(actualBucketLength);
@@ -148,5 +150,45 @@ describe('src/Adapter/RedisAdapter.ts', () => {
         await adapter.flush();
 
         expect(await adapter.collect()).to.have.length(0);
+    });
+
+    it('should construct with options as well', (done) => {
+        const adpt = new RedisAdapter({url: process.env.REDIS_DSN || 'redis://localhost:6379'});
+
+        expect(adpt).to.be.instanceOf(RedisAdapter);
+        adpt.closeClient().then(async () => {
+            await sleep(1);
+            expect(adpt.client.connected).to.eq(false);
+            done();
+        });
+    });
+
+    it('should throw errors when redis doesn\'t work', async () => {
+        await adapter.closeClient();
+        await sleep(1);
+        let error = null;
+        try {
+            const counter = new Counter(adapter, {name: 'counter', help: 'bar'});
+            await counter.inc();
+        } catch (e) {
+            error = e.message;
+        }
+        expect(error).to.contain('Failed to update, Redis Error: ');
+
+        try {
+            const gauge = new Gauge(adapter, {name: 'gauge', help: 'bar'});
+            await gauge.inc();
+        } catch (e) {
+            error = e.message;
+        }
+        expect(error).to.contain('Failed to update, Redis Error: ');
+
+        try {
+            const histogram = new Histogram(adapter, {name: 'histogram', help: 'bar'});
+            await histogram.observe(1);
+        } catch (e) {
+            error = e.message;
+        }
+        expect(error).to.contain('Failed to update, Redis Error: ');
     });
 });

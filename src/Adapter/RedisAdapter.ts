@@ -7,7 +7,7 @@ import DataInterface from './DataInterface';
 export const PROMETHEUS_METRIC_KEYS_SUFFIX = '_METRIC_KEYS';
 
 export default class RedisAdapter extends AbstractAdapter {
-    private readonly client: RedisClient;
+    public readonly client: RedisClient;
 
     constructor(options: ClientOpts | RedisClient) {
         super();
@@ -21,6 +21,10 @@ export default class RedisAdapter extends AbstractAdapter {
 
     public async flush(): Promise<void> {
         await this.client.flushall();
+    }
+
+    public async closeClient(): Promise<void> {
+        return new Promise((resolve) => this.client.quit(() => resolve()));
     }
 
     public async collect(): Promise<MetricFamilySamples[]> {
@@ -43,7 +47,7 @@ export default class RedisAdapter extends AbstractAdapter {
             await this.hSet(key, '__meta', JSON.stringify(metadata));
             await this.sAdd('counter' + PROMETHEUS_METRIC_KEYS_SUFFIX, key);
         } catch (e) {
-            throw new Error('Failed to update redis: ' + e.message);
+            throw new Error('Failed to update, Redis Error: ' + e.message);
         }
     }
 
@@ -63,7 +67,7 @@ export default class RedisAdapter extends AbstractAdapter {
             await this.hSet(key, '__meta', JSON.stringify(metadata));
             await this.sAdd('gauge' + PROMETHEUS_METRIC_KEYS_SUFFIX, key);
         } catch (e) {
-            throw new Error('Failed to update redis: ' + e.message);
+            throw new Error('Failed to update, Redis Error: ' + e.message);
         }
     }
 
@@ -91,7 +95,7 @@ export default class RedisAdapter extends AbstractAdapter {
             await this.hSet(key, '__meta', JSON.stringify(metadata));
             await this.sAdd('histogram' + PROMETHEUS_METRIC_KEYS_SUFFIX, key);
         } catch (e) {
-            throw new Error('Failed to update redis: ' + e.message);
+            throw new Error('Failed to update, Redis Error: ' + e.message);
         }
     }
 
