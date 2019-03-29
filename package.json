@@ -36,7 +36,7 @@
         "chai": "^4.2.0",
         "mocha": "^5.2.0",
         "nyc": "^13.3.0",
-        "redis": "^2.8.0",
+        "ioredis": "^4.9.0",
         "reflect-metadata": "^0.1.13",
         "sinon": "^7.2.3",
         "sinon-chai": "^3.3.0",
@@ -62,8 +62,5 @@
             "@semantic-release/git",
             "@semantic-release/npm"
         ]
-    },
-    "dependencies": {
-        "ioredis": "^4.9.0"
     }
 }
