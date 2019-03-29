@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/aequasi/async-prometheus-client/compare/v2.0.0...v2.0.1) (2019-03-29)
+
+
+### Bug Fixes
+
+* **deps:** Fixing deps ([2e856dc](https://github.com/aequasi/async-prometheus-client/commit/2e856dc))
+
 # [2.0.0](https://github.com/aequasi/async-prometheus-client/compare/v1.0.21...v2.0.0) (2019-03-29)
 
 
