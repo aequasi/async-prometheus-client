@@ -238,7 +238,12 @@ export default class RedisAdapter extends AbstractAdapter {
 
     private async hIncByFloat(key: string, field: string, value: number): Promise<number> {
         return new Promise((resolve, reject) => {
-            this.client.hincrbyfloat(key, field, value, (err, reply) => err ? reject(err) : resolve(reply));
+            this.client.hincrbyfloat(
+                key,
+                field,
+                value,
+                (err, reply) => err ? reject(err) : resolve(parseFloat(reply as any)),
+            );
         });
     }
 
