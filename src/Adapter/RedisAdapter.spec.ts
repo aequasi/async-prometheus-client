@@ -14,7 +14,12 @@ describe('src/Adapter/RedisAdapter.ts', () => {
     const client  = new Redis(process.env.REDIS_DSN || 'redis://localhost:6379');
     const adapter = new RedisAdapter(client);
     beforeEach(() => client.flushall());
-    after(() => client.quit());
+    after(async () => {
+        try {
+            await client.quit();
+        } catch (ignored) {
+        }
+    });
 
     it('should allow you to collect metrics', async () => {
         expect(await adapter.collect()).to.have.length(0);
