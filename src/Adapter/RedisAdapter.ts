@@ -1,4 +1,4 @@
-import {ClientOpts, createClient, RedisClient} from 'redis';
+import * as Redis from 'ioredis';
 import MetricFamilySamples, {MetricFamilySamplesInterface} from '../MetricFamilySamples';
 import {SampleInterface} from '../Sample';
 import AbstractAdapter from './AbstractAdapter';
@@ -7,15 +7,17 @@ import DataInterface from './DataInterface';
 export const PROMETHEUS_METRIC_KEYS_SUFFIX = '_METRIC_KEYS';
 
 export default class RedisAdapter extends AbstractAdapter {
-    public readonly client: RedisClient;
+    public readonly client: Redis.Redis;
 
-    constructor(options: ClientOpts | RedisClient) {
+    constructor(options: Redis.RedisOptions | Redis.Redis | string) {
         super();
 
-        if (options instanceof RedisClient) {
+        if (options instanceof Redis) {
             this.client = options;
+        } else if (typeof options === 'string') {
+            this.client = new Redis(options);
         } else {
-            this.client = createClient(options);
+            this.client = new Redis(options);
         }
     }
 
@@ -236,7 +238,7 @@ export default class RedisAdapter extends AbstractAdapter {
 
     private async hIncByFloat(key: string, field: string, value: number): Promise<number> {
         return new Promise((resolve, reject) => {
-            this.client.hincrbyfloat(key, field, value, (err, reply) => err ? reject(err) : resolve(parseFloat(reply)));
+            this.client.hincrbyfloat(key, field, value, (err, reply) => err ? reject(err) : resolve(reply));
         });
     }
 

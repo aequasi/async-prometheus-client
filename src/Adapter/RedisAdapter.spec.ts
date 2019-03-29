@@ -1,6 +1,6 @@
 import {expect, use} from 'chai';
+import * as Redis from 'ioredis';
 import 'mocha';
-import {createClient} from 'redis';
 import * as sinonChai from 'sinon-chai';
 
 import {Counter, Gauge, Histogram} from '../Metric';
@@ -11,7 +11,7 @@ use(sinonChai);
 const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('src/Adapter/RedisAdapter.ts', () => {
-    const client  = createClient(process.env.REDIS_DSN || 'redis://localhost:6379');
+    const client  = new Redis(process.env.REDIS_DSN || 'redis://localhost:6379');
     const adapter = new RedisAdapter(client);
     beforeEach(() => client.flushall());
     after(() => client.quit());
@@ -155,12 +155,12 @@ describe('src/Adapter/RedisAdapter.ts', () => {
     });
 
     it('should construct with options as well', (done) => {
-        const adpt = new RedisAdapter({url: process.env.REDIS_DSN || 'redis://localhost:6379'});
+        const adpt = new RedisAdapter(process.env.REDIS_DSN || 'redis://localhost:6379');
 
         expect(adpt).to.be.instanceOf(RedisAdapter);
         adpt.closeClient().then(async () => {
             await sleep(1);
-            expect(adpt.client.connected).to.eq(false);
+            expect(adpt.client.status).to.not.eq('ready');
             done();
         });
     });
