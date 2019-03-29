@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/aequasi/async-prometheus-client/compare/v1.0.21...v2.0.0) (2019-03-29)
+
+
+### Features
+
+* **redis:** Moving to ioredis ([f5e17f9](https://github.com/aequasi/async-prometheus-client/commit/f5e17f9))
+
+
+### BREAKING CHANGES
+
+* **redis:** Moving to IORedis
+
 ## [1.0.21](https://github.com/aequasi/async-prometheus-client/compare/v1.0.20...v1.0.21) (2019-02-17)
 
 
